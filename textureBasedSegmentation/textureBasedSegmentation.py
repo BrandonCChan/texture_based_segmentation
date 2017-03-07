@@ -98,23 +98,57 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     parametersFormLayout.addRow("Output Volume: ", self.outputSelector)
 
     #
-    # threshold value
+    # Red threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
-    self.imageThresholdSliderWidget.singleStep = 0.1
-    self.imageThresholdSliderWidget.minimum = -100
-    self.imageThresholdSliderWidget.maximum = 100
-    self.imageThresholdSliderWidget.value = 0.5
+    self.imageThresholdSliderWidget.singleStep = 1
+    self.imageThresholdSliderWidget.minimum = 0
+    self.imageThresholdSliderWidget.maximum = 255
+    self.imageThresholdSliderWidget.value = 0
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
-    parametersFormLayout.addRow("Image threshold", self.imageThresholdSliderWidget)
+    parametersFormLayout.addRow("Red value", self.imageThresholdSliderWidget)
 
+	#
+    # Green threshold value
+    #
+    self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
+    self.imageThresholdSliderWidget.singleStep = 1
+    self.imageThresholdSliderWidget.minimum = 0
+    self.imageThresholdSliderWidget.maximum = 255
+    self.imageThresholdSliderWidget.value = 0
+    self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
+    parametersFormLayout.addRow("Green value", self.imageThresholdSliderWidget)
+	
+	#
+    # Blue threshold value
+    #
+    self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
+    self.imageThresholdSliderWidget.singleStep = 1
+    self.imageThresholdSliderWidget.minimum = 0
+    self.imageThresholdSliderWidget.maximum = 255
+    self.imageThresholdSliderWidget.value = 0
+    self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
+    parametersFormLayout.addRow("Blue value", self.imageThresholdSliderWidget)
+	
+	#
+    # +/- threshold value
+    #
+    self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
+    self.imageThresholdSliderWidget.singleStep = 1
+    self.imageThresholdSliderWidget.minimum = 0
+    self.imageThresholdSliderWidget.maximum = 255
+    self.imageThresholdSliderWidget.value = 0
+    self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
+    parametersFormLayout.addRow("+/- Threshold", self.imageThresholdSliderWidget)
+	
+	
     #
     # check box to trigger taking screen shots for later use in tutorials
     #
-    self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
-    self.enableScreenshotsFlagCheckBox.checked = 0
-    self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
-    parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
+    #self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
+    #self.enableScreenshotsFlagCheckBox.checked = 0
+    #self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
+    #parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
 
     #
     # Apply Button
