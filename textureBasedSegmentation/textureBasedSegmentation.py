@@ -178,12 +178,10 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
 
   def onApplyButton(self):
     logic = textureBasedSegmentationLogic()
-	
     logic.ShowTextureOnModel(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
 	
-    # enableScreenshotsFlag = self.enableScreenshotsFlagCheckBox.checked
-    imageThreshold = self.imageThresholdSliderWidget.value
-    logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold, enableScreenshotsFlag)
+    #imageThreshold = self.imageThresholdSliderWidget.value
+    #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
 
 #
 # textureBasedSegmentationLogic
@@ -192,7 +190,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
 class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
   
   #
-  # Renders and diisplays tetured model in the slicer scene
+  # Renders and displays tetured model in the slicer scene
   #  
   def ShowTextureOnModel(self, modelNode, textureImageNode):
     modelDisplayNode=modelNode.GetDisplayNode()
@@ -202,6 +200,17 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
     textureImageFlipVert.SetInputConnection(textureImageNode.GetImageDataConnection())
     modelDisplayNode.SetTextureImageDataConnection(textureImageFlipVert.GetOutputPort())
 
+  #
+  # Function that segments the model through a trained machine learning model 
+  #
+  def ClassifyTextures(self, modelNode, textureImageNode): 
+	#
+	# /*TO DO*/
+	#
+	
+  #
+  # /* TO DO: Delete */
+  #
   def hasImageData(self,volumeNode):
     """This is an example logic method that
     returns true if the passed in volume
