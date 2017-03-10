@@ -161,6 +161,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     # connections
     self.applyButton.connect('clicked(bool)', self.onApplyButton)
     self.inputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
+    self.inputTextureSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.onSelect)
     self.outputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
 
     # Add vertical spacer
@@ -173,28 +174,43 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     pass
 
   def onSelect(self):
-    self.applyButton.enabled = self.inputSelector.currentNode() and self.outputSelector.currentNode()
+    self.applyButton.enabled = self.inputSelector.currentNode() and self.inputTextureSelector.currentNode() # and self.outputSelector.currentNode()
 
   def onApplyButton(self):
     logic = textureBasedSegmentationLogic()
-    enableScreenshotsFlag = self.enableScreenshotsFlagCheckBox.checked
-    imageThreshold = self.imageThresholdSliderWidget.value
-    logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold, enableScreenshotsFlag)
+    logic.ShowTextureOnModel(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
+	
+    #imageThreshold = self.imageThresholdSliderWidget.value
+    #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
 
 #
 # textureBasedSegmentationLogic
 #
 
 class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
-  """This class should implement all the actual
-  computation done by your module.  The interface
-  should be such that other python code can import
-  this class and make use of the functionality without
-  requiring an instance of the Widget.
-  Uses ScriptedLoadableModuleLogic base class, available at:
-  https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
-  """
+  
+  #
+  # Renders and displays tetured model in the slicer scene
+  #  
+  def ShowTextureOnModel(self, modelNode, textureImageNode):
+    modelDisplayNode=modelNode.GetDisplayNode()
+    modelDisplayNode.SetBackfaceCulling(0)
+    textureImageFlipVert=vtk.vtkImageFlip()
+    textureImageFlipVert.SetFilteredAxis(1)
+    textureImageFlipVert.SetInputConnection(textureImageNode.GetImageDataConnection())
+    modelDisplayNode.SetTextureImageDataConnection(textureImageFlipVert.GetOutputPort())
 
+  #
+  # Function that segments the model through a trained machine learning model 
+  #
+  def ClassifyTextures(self, modelNode, textureImageNode): 
+	#
+	# /*TO DO*/
+	#
+	
+  #
+  # /* TO DO: Delete */
+  #
   def hasImageData(self,volumeNode):
     """This is an example logic method that
     returns true if the passed in volume
