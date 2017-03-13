@@ -1,0 +1,29 @@
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Session start time .......: 2017-03-12 20:50:13
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Slicer version ...........: 4.7.0-2017-01-06 (revision 25633) macosx-amd64 - installed
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Operating system .........: Mac OS X / 10.12.3 / 16D32 - 64-bit
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Memory ...................: 8192 MB physical, 1024 MB virtual
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - CPU ......................: GenuineIntel Intel(R) Core(TM) i7-5557U CPU @ 3.10GHz, 2 cores, 4 logical processors
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Developer mode enabled ...: yes
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Prefer executable CLI ....: yes
+[DEBUG][Qt] 12.03.2017 20:50:13 [] (unknown:0) - Additional module paths ..: /Applications/Slicer.app/Contents/Extensions-25633/Sequences/lib/Slicer-4.7/qt-loadable-modules, /Applications/Slicer.app/Contents/Extensions-25633/SlicerIGT/lib/Slicer-4.7/qt-loadable-modules, /Applications/Slicer.app/Contents/Extensions-25633/SlicerIGT/lib/Slicer-4.7/qt-scripted-modules, /Applications/Slicer.app/Contents/Extensions-25633/DebuggingTools/lib/Slicer-4.7/qt-scripted-modules, /Users/Mareena/Documents/2016-2017/Winter 2017/CISC 472/Homework/mareenaExtension/mareenaModule, /Users/Mareena/Documents/texture_based_segmentation/textureBasedSegmentation
+[DEBUG][Qt] 12.03.2017 20:50:17 [] (unknown:0) - Number of registered modules: 166
+[CRITICAL][Stream] 12.03.2017 20:50:18 [] (unknown:0) - Traceback (most recent call last):
+[CRITICAL][Stream] 12.03.2017 20:50:18 [] (unknown:0) -   File "<string>", line 1, in <module>
+[CRITICAL][Stream] 12.03.2017 20:50:18 [] (unknown:0) -   File "/Users/Mareena/Documents/texture_based_segmentation/textureBasedSegmentation/textureBasedSegmentation.py", line 242
+[CRITICAL][Stream] 12.03.2017 20:50:18 [] (unknown:0) -     '''
+[CRITICAL][Stream] 12.03.2017 20:50:18 [] (unknown:0) -       ^
+[CRITICAL][Stream] 12.03.2017 20:50:18 [] (unknown:0) - IndentationError: expected an indented block
+[CRITICAL][Qt] 12.03.2017 20:50:18 [] (unknown:0) - loadSourceAsModule - Failed to load file "/Users/Mareena/Documents/texture_based_segmentation/textureBasedSegmentation/textureBasedSegmentation.py"  as module "textureBasedSegmentation" !
+[CRITICAL][Qt] 12.03.2017 20:50:18 [] (unknown:0) - Fail to instantiate module  "textureBasedSegmentation"
+[DEBUG][Qt] 12.03.2017 20:50:18 [] (unknown:0) - Number of instantiated modules: 165
+[WARNING][Qt] 12.03.2017 20:50:19 [] (unknown:0) - When loading module  "CLIEventTest" , the dependency "CLI4Test" failed to be loaded.
+[INFO][Stream] 12.03.2017 20:50:23 [] (unknown:0) - Initializing terminology mapping for map file /Applications/Slicer.app/Contents/share/Slicer-4.7/ColorFiles/Terminology//GenericAnatomyColors-SNOMED.csv
+[INFO][Stream] 12.03.2017 20:50:23 [] (unknown:0) - 288 terms were read for Slicer LUT GenericAnatomyColors
+[INFO][VTK] 12.03.2017 20:50:23 [vtkSlicerTerminologiesModuleLogic (0x60000128dbb0)] (/Users/kitware/Dashboards/Nightly/Slicer-0/Modules/Loadable/Terminologies/Logic/vtkSlicerTerminologiesModuleLogic.cxx:893) - Terminology named 'Segmentation category and type - 3D Slicer General Anatomy list' successfully loaded from file /Applications/Slicer.app/Contents/share/Slicer-4.7/qt-loadable-modules/Terminologies/SegmentationCategoryTypeModifier-SlicerGeneralAnatomy.json
+[INFO][VTK] 12.03.2017 20:50:23 [vtkSlicerTerminologiesModuleLogic (0x60000128dbb0)] (/Users/kitware/Dashboards/Nightly/Slicer-0/Modules/Loadable/Terminologies/Logic/vtkSlicerTerminologiesModuleLogic.cxx:893) - Terminology named 'Segmentation category and type - DICOM master list' successfully loaded from file /Applications/Slicer.app/Contents/share/Slicer-4.7/qt-loadable-modules/Terminologies/SegmentationCategoryTypeModifier-DICOM-Master.json
+[INFO][VTK] 12.03.2017 20:50:23 [vtkSlicerTerminologiesModuleLogic (0x60000128dbb0)] (/Users/kitware/Dashboards/Nightly/Slicer-0/Modules/Loadable/Terminologies/Logic/vtkSlicerTerminologiesModuleLogic.cxx:968) - Anatomic context named 'Anatomic codes - DICOM master list' successfully loaded from file /Applications/Slicer.app/Contents/share/Slicer-4.7/qt-loadable-modules/Terminologies/AnatomicRegionModifier-Master.json
+[WARNING][Qt] 12.03.2017 20:50:23 [] (unknown:0) - When loading module  "TwoCLIsInARowTest" , the dependency "CLI4Test" failed to be loaded.
+[WARNING][Qt] 12.03.2017 20:50:23 [] (unknown:0) - When loading module  "TwoCLIsInParallelTest" , the dependency "CLI4Test" failed to be loaded.
+[DEBUG][Qt] 12.03.2017 20:50:23 [] (unknown:0) - Number of loaded modules: 162
+[DEBUG][Qt] 12.03.2017 20:50:23 [] (unknown:0) - Switch to module:  "Welcome"
+[DEBUG][Qt] 12.03.2017 20:51:11 [] (unknown:0) - Switch to module:  ""
