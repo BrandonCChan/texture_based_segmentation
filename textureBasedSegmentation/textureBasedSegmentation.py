@@ -156,18 +156,14 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     #
     # Texture Selection
     #
-    self.textureSelector = slicer.qMRMLNodeComboBox()
-    self.textureSelector.nodeTypes = ["vtkMRMLModel"]
-    self.textureSelector.selectNodeUponCreation = True
-    self.textureSelector.addEnabled = True
-    self.textureSelector.removeEnabled = True
-    self.textureSelector.noneEnabled = True
-    self.textureSelector.showHidden = False
-    self.textureSelector.showChildNodeTypes = False
-    self.textureSelector.setMRMLScene(slicer.mrmlScene)
-
-    self.textureSelector.setToolTip( "Pick the input to the algorithm." )
+    self.textureSelector = qt.QComboBox()
     parametersFormLayout.addRow("Texture:", self.textureSelector)
+    self.textureSelector.addItem('Bone')
+    self.textureSelector.addItem('Muscle')
+    self.textureSelector.addItem('Tendon')
+    self.textureSelector.addItem('Cartilage')
+
+
 
 
     #
