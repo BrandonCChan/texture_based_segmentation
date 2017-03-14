@@ -157,6 +157,12 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.applyButton.toolTip = "Run the algorithm."
     self.applyButton.enabled = False
     parametersFormLayout.addRow(self.applyButton)
+	
+	#
+	# Surface Area Display 
+	#
+    self.surfaceAreaDisplay = qt.QLineEdit("Surface Area: ")
+    parametersFormLayout.addRow(self.surfaceAreaDisplay)
 
     # connections
     self.applyButton.connect('clicked(bool)', self.onApplyButton)
@@ -179,7 +185,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
   def onApplyButton(self):
     logic = textureBasedSegmentationLogic()
     logic.ShowTextureOnModel(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
-	
+    self.surfaceAreaDisplay.setText('Surface Area: ' + str(logic.GetSurfaceArea(self.inputSelector.currentNode())) + ' mm^2')
     #imageThreshold = self.imageThresholdSliderWidget.value
     #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
 
@@ -200,10 +206,18 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
     textureImageFlipVert.SetInputConnection(textureImageNode.GetImageDataConnection())
     modelDisplayNode.SetTextureImageDataConnection(textureImageFlipVert.GetOutputPort())
 
+  def GetSurfaceArea(self,modelNode):
+    massProperties = vtk.vtkMassProperties()
+    triangleFilter = vtk.vtkTriangleFilter()
+    massProperties.SetInputConnection(triangleFilter.GetOutputPort())
+    triangleFilter.SetInputData(modelNode.GetPolyData())
+    surfaceArea = massProperties.GetSurfaceArea()
+    return surfaceArea
+	
   #
   # Function that segments the model through a trained machine learning model 
   #
-  def ClassifyTextures(self, modelNode, textureImageNode): 
+  #def ClassifyTextures(self, modelNode, textureImageNode): 
 	#
 	# /*TO DO*/
 	#
