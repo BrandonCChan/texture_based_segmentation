@@ -3,6 +3,8 @@ import unittest
 import vtk, qt, ctk, slicer
 from slicer.ScriptedLoadableModule import *
 import logging
+import sys
+
 
 #
 # textureBasedSegmentation
@@ -69,7 +71,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
 
     #
     # input texture selector
-	#
+  	#
     self.inputTextureSelector = slicer.qMRMLNodeComboBox()
     self.inputTextureSelector.nodeTypes = ( ("vtkMRMLVectorVolumeNode"), "" )
     self.inputTextureSelector.selectNodeUponCreation = True
@@ -108,7 +110,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("Red value", self.imageThresholdSliderWidget)
 
-	#
+	  #
     # Green threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
@@ -119,7 +121,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("Green value", self.imageThresholdSliderWidget)
 	
-	#
+	  #
     # Blue threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
@@ -130,7 +132,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("Blue value", self.imageThresholdSliderWidget)
 	
-	#
+	  #
     # +/- threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
@@ -149,6 +151,20 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     #self.enableScreenshotsFlagCheckBox.checked = 0
     #self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
     #parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
+
+
+    #
+    # Texture Selection
+    #
+    self.textureSelector = qt.QComboBox()
+    parametersFormLayout.addRow("Texture:", self.textureSelector)
+    self.textureSelector.addItem('Bone')
+    self.textureSelector.addItem('Muscle')
+    self.textureSelector.addItem('Tendon')
+    self.textureSelector.addItem('Cartilage')
+
+
+
 
     #
     # Apply Button
@@ -169,6 +185,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.inputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
     self.inputTextureSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.onSelect)
     self.outputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
+    self.textureSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
 
     # Add vertical spacer
     self.layout.addStretch(1)
@@ -188,6 +205,8 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.surfaceAreaDisplay.setText('Surface Area: ' + str(logic.GetSurfaceArea(self.inputSelector.currentNode())) + ' mm^2')
     #imageThreshold = self.imageThresholdSliderWidget.value
     #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
+
+
 
 #
 # textureBasedSegmentationLogic
@@ -217,7 +236,8 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
   #
   # Function that segments the model through a trained machine learning model 
   #
-  #def ClassifyTextures(self, modelNode, textureImageNode): 
+
+  # def ClassifyTextures(self, modelNode, textureImageNode): 
 	#
 	# /*TO DO*/
 	#
@@ -225,6 +245,7 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
   #
   # /* TO DO: Delete */
   #
+  '''
   def hasImageData(self,volumeNode):
     """This is an example logic method that
     returns true if the passed in volume
@@ -237,6 +258,7 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
       logging.debug('hasImageData failed: no image data in volume node')
       return False
     return True
+  '''
 
   def isValidInputOutputData(self, inputVolumeNode, outputVolumeNode):
     """Validates if the output is not the same as input
