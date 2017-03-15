@@ -1,5 +1,8 @@
-# Implementation of machine learning for classification of tissue for texture based segmentation
-# This uses Conda for Windows and Sci-Kit learn for building models
+# Implementation of neural network machine learning for classification of tissue segmentation based on texture
+# This uses Conda, Sci-Kit Learn for building models, and Numpy
+# Please make sure these dependencies are installed to run the code.
+#
+# This is a test function to ensure that everything is installed properly.
 
 # With a 4-class classification problem based on 3 attributes, aim to use a 3 layered perceptron to predict tissue type.
 # This model will train using backpropagation.
@@ -9,25 +12,30 @@
 import numpy as np
 from sklearn.neural_network import MLPClassifier
 
-# Normalize RGB data to a Gaussian curve
-data_normalized = preprocessing.normalize(data, norm='l2')
+# Import file data
+data_file = open('Manual_Segment_Short.csv')
+data_file.readline()
+data = np.loadtxt(f, delimiter=',')
 
-# Instantiate MLP with stochastic gradient descent, 3 layers - 9 nodes per layer
-clf = MLPClassifier(solver='sgd', alpha=1e-5, hidden_layer_sizes(9,9,9), random_state=1)
+# Shuffle the dataset and randomly sample between training and testing
+# Need to find numpy or scikit documentation for this
 
-# This will need training data to build a proper model
-train_data = []
-train_labels = []
 
-clf.fit(train_data, train_labels)
+# Split labels and training data
+train_labels, data = np.hsplit(data, 2)
 
-# Predict based on test data
-test_data = []
-test_labels = []
+# Normalize RGB data to between 0 and 1
+train_data = preprocessing.normalize(data, norm='l2')
 
-# I think the results of this prediction is a numpy array - need to confirm
-test_results = clf.predict(test_data)
+# Instantiate MLP with quasi-Netownian optimization methods, 3 layers - 9 nodes per layer and train model
+clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(9,9,9), random_state=1)
+clf.fit(train_data, labels)
 
+'''
+# Test model based on randomly sampled data
+clf.predict(test_data)
+
+Calculate score accuracy to validate
 score = 0
 for i in range(len(test_data)):
 	if test_results[i] == test_labels[i]:
@@ -35,3 +43,4 @@ for i in range(len(test_data)):
 
 # Calculate final score
 score /= len(test_data)
+'''
