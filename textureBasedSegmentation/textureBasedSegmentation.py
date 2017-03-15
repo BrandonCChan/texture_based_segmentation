@@ -26,8 +26,7 @@ class textureBasedSegmentation(ScriptedLoadableModule):
     texture (RGB, HSL) value based machine learning classification techniques
     """
     self.parent.acknowledgementText = """
-    This module was created by Brandon Chan, Nuwan Perera, and Mareena Mallory in combination with code originally 
-    published by Amani Ibrahim, Manuela Kunz, Andras Lasso, and Gabor Fichtinger
+    This module was created by Brandon Chan, Nuwan Perera, and Mareena Mallory
     """ 
 
 #
@@ -110,7 +109,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("Red value", self.imageThresholdSliderWidget)
 
-	  #
+    #
     # Green threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
@@ -121,7 +120,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("Green value", self.imageThresholdSliderWidget)
 	
-	  #
+    #
     # Blue threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
@@ -132,7 +131,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("Blue value", self.imageThresholdSliderWidget)
 	
-	  #
+    #
     # +/- threshold value
     #
     self.imageThresholdSliderWidget = ctk.ctkSliderWidget()
@@ -143,7 +142,8 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
     parametersFormLayout.addRow("+/- Threshold", self.imageThresholdSliderWidget)
 	
-	
+    #
+    # /*TODO DELETE*/
     #
     # check box to trigger taking screen shots for later use in tutorials
     #
@@ -151,7 +151,6 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     #self.enableScreenshotsFlagCheckBox.checked = 0
     #self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
     #parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
-
 
     #
     # Texture Selection
@@ -163,9 +162,6 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.textureSelector.addItem('Tendon')
     self.textureSelector.addItem('Cartilage')
 
-
-
-
     #
     # Apply Button
     #
@@ -173,13 +169,13 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.applyButton.toolTip = "Run the algorithm."
     self.applyButton.enabled = False
     parametersFormLayout.addRow(self.applyButton)
-	
-	#
-	# Surface Area Display 
-	#
+
+    #
+    # Surface Area Display 
+    #
     self.surfaceAreaDisplay = qt.QLineEdit("Surface Area: ")
     parametersFormLayout.addRow(self.surfaceAreaDisplay)
-
+	
     # connections
     self.applyButton.connect('clicked(bool)', self.onApplyButton)
     self.inputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
@@ -202,18 +198,15 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
   def onApplyButton(self):
     logic = textureBasedSegmentationLogic()
     logic.ShowTextureOnModel(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
+    logic.MapRGBtoPoints(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
     self.surfaceAreaDisplay.setText('Surface Area: ' + str(logic.GetSurfaceArea(self.inputSelector.currentNode())) + ' mm^2')
-    #imageThreshold = self.imageThresholdSliderWidget.value
     #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
-
-
 
 #
 # textureBasedSegmentationLogic
 #
 
 class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
-  
   #
   # Renders and displays tetured model in the slicer scene
   #  
@@ -225,6 +218,9 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
     textureImageFlipVert.SetInputConnection(textureImageNode.GetImageDataConnection())
     modelDisplayNode.SetTextureImageDataConnection(textureImageFlipVert.GetOutputPort())
 
+  #
+  # Gets the surface area of the model selected
+  #
   def GetSurfaceArea(self,modelNode):
     massProperties = vtk.vtkMassProperties()
     triangleFilter = vtk.vtkTriangleFilter()
@@ -236,29 +232,103 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
   #
   # Function that segments the model through a trained machine learning model 
   #
-
-  # def ClassifyTextures(self, modelNode, textureImageNode): 
+  def SegmentTriangles(self, modelNode, outputModelNode):
+    # Get triangle data and point data from the original (unsegmented model)
+    originalPolyData = modelNode.GetPolyData()
+    originalPointData=fullPolyData.GetPointData()
+	
+	# Get rgb values of each point in the model and store in arrays
+    redValues = originalPointData.GetArray('ColorRed')
+    greenValues = originalPointData.GetArray('ColorGreen')
+    blueValues = originalPointData.GetArray('ColorBlue')
+    
+	# Get number of entries in the array (number of points in the model)
+    lengthTuples = int(redValues.GetNumberOfTuples()) 
+    selectedPointIds = vtk.vtkIdTypeArray()
+	
 	#
-	# /*TO DO*/
+	# */TODO Figure out how to pipe data to external program and recieve new array of traingles. */
 	#
 	
+    return 0
+	 
   #
-  # /* TO DO: Delete */
+  # Add texture data to scalars
   #
-  '''
-  def hasImageData(self,volumeNode):
-    """This is an example logic method that
-    returns true if the passed in volume
-    node has valid image data
-    """
-    if not volumeNode:
-      logging.debug('hasImageData failed: no volume node')
-      return False
-    if volumeNode.GetImageData() is None:
-      logging.debug('hasImageData failed: no image data in volume node')
-      return False
-    return True
-  '''
+  def MapRGBtoPoints(self, modelNode, textureImageNode):
+	# Get triangles/verticies data from model 
+    polyData = modelNode.GetPolyData()
+	
+    textureImageFlipVert = vtk.vtkImageFlip()
+    textureImageFlipVert.SetFilteredAxis(1)
+    textureImageFlipVert.SetInputConnection(textureImageNode.GetImageDataConnection())
+    textureImageFlipVert.Update() 
+    textureImageData = textureImageFlipVert.GetOutput()
+	
+	# Get location of points that make up the model and associated texture coordinates
+    pointData = polyData.GetPointData()
+    tcoords = pointData.GetTCoords()
+    numOfPoints = pointData.GetNumberOfTuples()
+	
+	# Ensure number of texture coordinates match the number of vertecies in the model 
+    assert numOfPoints == tcoords.GetNumberOfTuples(), "Number of texture coordinates does not equal number of points"
+    textureSamplingPointsUv = vtk.vtkPoints()
+    textureSamplingPointsUv.SetNumberOfPoints(numOfPoints)
+	
+	# Get u,v texture coordinates from model node
+    for pointIndex in xrange(numOfPoints):
+      uv = tcoords.GetTuple2(pointIndex)
+      textureSamplingPointsUv.SetPoint(pointIndex, uv[0], uv[1], 0)
+
+	# Calculate transforms for loaded texture image
+    textureSamplingPointDataUv = vtk.vtkPolyData()
+    uvToXyz=vtk.vtkTransform()
+    textureImageDataSpacingSpacing = textureImageData.GetSpacing()
+    textureImageDataSpacingOrigin = textureImageData.GetOrigin()
+    textureImageDataSpacingDimensions = textureImageData.GetDimensions()
+    uvToXyz.Scale(textureImageDataSpacingDimensions[0]/textureImageDataSpacingSpacing[0], textureImageDataSpacingDimensions[1]/textureImageDataSpacingSpacing[1], 1)
+    uvToXyz.Translate(textureImageDataSpacingOrigin)
+    textureSamplingPointDataUv.SetPoints(textureSamplingPointsUv)
+    transformPolyDataToXyz = vtk.vtkTransformPolyDataFilter()
+    transformPolyDataToXyz.SetInputData(textureSamplingPointDataUv)
+    transformPolyDataToXyz.SetTransform(uvToXyz)
+	
+    probeFilter = vtk.vtkProbeFilter()
+    probeFilter.SetInputConnection(transformPolyDataToXyz.GetOutputPort())
+    probeFilter.SetSourceData(textureImageData)
+    probeFilter.Update()
+    rgbPoints = probeFilter.GetOutput().GetPointData().GetArray('ImageScalars')
+	
+	# Initialize arrays to store rgb values of the pixel mapped to a given vertex point in the model
+    colorArrayRed = vtk.vtkDoubleArray()
+    colorArrayRed.SetName('ColorRed')
+    colorArrayRed.SetNumberOfTuples(numOfPoints)
+    colorArrayGreen = vtk.vtkDoubleArray()
+    colorArrayGreen.SetName('ColorGreen')
+    colorArrayGreen.SetNumberOfTuples(numOfPoints)
+    colorArrayBlue = vtk.vtkDoubleArray()
+    colorArrayBlue.SetName('ColorBlue')
+    colorArrayBlue.SetNumberOfTuples(numOfPoints)
+	
+	# Iterate through each point and get / store the rgb value of the pixel it is mapped to
+    for pointIndex in xrange(numOfPoints):
+      rgb = rgbPoints.GetTuple3(pointIndex)
+      colorArrayRed.SetValue(pointIndex,rgb[0])
+      colorArrayGreen.SetValue(pointIndex,rgb[1])
+      colorArrayBlue.SetValue(pointIndex,rgb[2])
+	
+    colorArrayRed.Modified()
+    colorArrayGreen.Modified()
+    colorArrayBlue.Modified()
+	
+    pointData.AddArray(colorArrayRed)
+    pointData.AddArray(colorArrayGreen)
+    pointData.AddArray(colorArrayBlue)
+	
+    pointData.Modified()
+    polyData.Modified()
+    return
+
 
   def isValidInputOutputData(self, inputVolumeNode, outputVolumeNode):
     """Validates if the output is not the same as input
