@@ -3,11 +3,13 @@
 # Please make sure these dependencies are installed to run the code.
 #
 # This is a test function to ensure that everything is installed properly.
-
+#
 # With a 4-class classification problem based on 3 attributes, aim to use a 3 layered perceptron to predict tissue type.
 # This model will train using backpropagation.
 # The final model will need to be unsupervised since data is not labelled, rather it aims to make a prediction without
 # knowing the correct answer.
+#
+# Nuwan Perera, Brandon Chan, Mareena Mallory
 
 import numpy as np
 from sklearn.neural_network import MLPClassifier
@@ -29,7 +31,6 @@ RGB_data = preprocessing.normalize(RGB_data, norm='l2')
 # Randomly sample dataset
 train_data, test_data, train_labels, test_labels = train_test_split(RGB_data, data_labels, test_size=0.4, random_state=0)
 
-
 # Instantiate MLP with quasi-Netownian optimization methods, 3 layers - 9 nodes per layer and train model
 clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(9,9,9), random_state=1)
 clf.fit(train_data, train_labels)
@@ -37,13 +38,17 @@ clf.fit(train_data, train_labels)
 # Test model based on randomly sampled data
 test_results = clf.predict(test_data)
 
-# Calculate score accuracy to validate
+# Calculate score accuracy to validate results of the model
 score = 0
 for i in range(len(test_data)):
 	if test_results[i] == test_labels[i]:
 		score += 1
 
-# Calculate final score
-score /= len(test_data)
+# Calculate final score based on % = (# correct classifications) / (sample size)
+score /= float(test_results.size)
+# Convert to percentage
+score *= 100
 
-print score
+# Consistently returning ~87.7 %
+
+print "Score:", score, "%"
