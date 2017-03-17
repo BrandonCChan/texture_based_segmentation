@@ -164,8 +164,6 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.textureSelector.addItem('Cartilage')
 
 
-
-
     #
     # Apply Button
     #
