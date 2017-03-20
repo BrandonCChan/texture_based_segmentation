@@ -50,5 +50,4 @@ score /= float(test_results.size)
 score *= 100
 
 # Consistently returning ~87.7 %
-
 print "Score:", score, "%"
