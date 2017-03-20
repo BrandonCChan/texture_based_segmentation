@@ -26,7 +26,7 @@ data_labels = data[:, 0]
 RGB_data = data[:, 1:4]
 
 # Normalize RGB data to between 0 and 1
-RGB_data = preprocessing.normalize(RGB_data, norm='l2')
+RGB_data = preprocessing.normalize(RGB_data, norm='l1', axis=1)
 
 # Randomly sample dataset
 train_data, test_data, train_labels, test_labels = train_test_split(RGB_data, data_labels, test_size=0.4, random_state=0)
