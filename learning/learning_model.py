@@ -12,6 +12,7 @@
 # Nuwan Perera, Brandon Chan, Mareena Mallory
 
 import numpy as np
+import pickle
 from sklearn.neural_network import MLPClassifier
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -52,3 +53,7 @@ score *= 100
 
 # Consistently returning ~87.7 %
 print "Score:", score, "%"
+
+# Serialize model using Pickle
+with open('neuralnetwork.pkl', 'wb') as f:
+	pickle.dump(clf, f)
