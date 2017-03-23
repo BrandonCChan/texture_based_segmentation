@@ -4,7 +4,8 @@ import vtk, qt, ctk, slicer
 from slicer.ScriptedLoadableModule import *
 import logging
 import sys
-
+import pickle
+import numpy as np
 
 #
 # textureBasedSegmentation
@@ -165,10 +166,18 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     #
     # Apply Button
     #
-    self.applyButton = qt.QPushButton("Apply")
+    self.applyButton = qt.QPushButton("Apply Texture")
     self.applyButton.toolTip = "Run the algorithm."
     self.applyButton.enabled = False
     parametersFormLayout.addRow(self.applyButton)
+	
+    #
+    # Segment Button
+    #
+    self.segmentButton = qt.QPushButton("Segment Model")
+    self.segmentButton.toolTip = "Run the segmentation"
+    self.segmentButton.enabled = True
+    parametersFormLayout.addRow(self.segmentButton)
 
     #
     # Surface Area Display 
@@ -178,6 +187,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
 	
     # connections
     self.applyButton.connect('clicked(bool)', self.onApplyButton)
+    self.segmentButton.connect('clicked(bool)',self.onSegmentButton)
     self.inputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
     self.inputTextureSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.onSelect)
     self.outputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
@@ -202,6 +212,10 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.surfaceAreaDisplay.setText('Surface Area: ' + str(logic.GetSurfaceArea(self.inputSelector.currentNode())) + ' mm^2')
     #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
 
+  def onSegmentButton(self):
+    logic = textureBasedSegmentationLogic()
+    logic.SegmentTriangles(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
+	
 #
 # textureBasedSegmentationLogic
 #
@@ -235,7 +249,7 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
   def SegmentTriangles(self, modelNode, outputModelNode):
     # Get triangle data and point data from the original (unsegmented model)
     originalPolyData = modelNode.GetPolyData()
-    originalPointData=fullPolyData.GetPointData()
+    originalPointData = originalPolyData.GetPointData()
 	
 	# Get rgb values of each point in the model and store in arrays
     redValues = originalPointData.GetArray('ColorRed')
@@ -246,9 +260,18 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
     lengthTuples = int(redValues.GetNumberOfTuples()) 
     selectedPointIds = vtk.vtkIdTypeArray()
 	
-	#
-	# */TODO Figure out how to pipe data to external program and recieve new array of traingles. */
-	#
+    outputArray = np.zeros((lengthTuples,4))
+	
+	# Covert data to a numpy array
+    for i in range(lengthTuples):
+      outputArray[i][0] = i
+      outputArray[i][1] = redValues.GetValue(i)
+      outputArray[i][2] = greenValues.GetValue(i)
+      outputArray[i][2] = blueValues.GetValue(i)
+	  
+    with open(os.path.join(os.pardir,'textureData.pkl'), 'wb') as f:
+      pickle.dump(outputArray, f)
+    #serializedArray = pickle.dumps(outputArray, protocol=0)
 	
     return 0
 	 
