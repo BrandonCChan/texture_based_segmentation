@@ -57,3 +57,4 @@ print "Score:", score, "%"
 # Serialize model using Pickle
 with open('neuralnetwork.pkl', 'wb') as f:
 	pickle.dump(clf, f)
+	
