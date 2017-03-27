@@ -11,9 +11,9 @@ from sklearn import preprocessing
 
 # Import file data
 inputFile = sys.argv[1]
-data_file = open(inputFile, 'r')
-data_file.readline()
-data = np.loadtxt(data_file, delimiter=',')
+with open(inputFile, 'rb') as r:
+	data = pickle.load(r)
+
 
 # Read in CLF model
 with open('neuralnetwork.pkl', 'rb') as f:
@@ -27,7 +27,7 @@ RGB_data = preprocessing.normalize(RGB_data, norm='l2', axis=1)
 results = clf.predict(RGB_data)
 
 # Concatenate results with data
-final_data = np.insert(data, [1], results, axis=1)
+final_data = np.hstack((data[:, 0], results))
 
 with open('classified_texture.pkl', 'wb') as f:
 	pickle.dump(final_data, f)
