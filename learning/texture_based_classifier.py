@@ -27,7 +27,7 @@ RGB_data = preprocessing.normalize(RGB_data, norm='l2', axis=1)
 results = clf.predict(RGB_data)
 
 # Concatenate results with data
-final_data = np.concatenate((data, results), axis=1)
+final_data = np.insert(data, [1], results, axis=1)
 
 with open('classified_texture.pkl', 'wb') as f:
-	pickle.dump(clf, f)
+	pickle.dump(final_data, f)
