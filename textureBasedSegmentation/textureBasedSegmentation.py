@@ -88,7 +88,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     # output volume selector
     #
     self.outputSelector = slicer.qMRMLNodeComboBox()
-    self.outputSelector.nodeTypes = ["vtkMRMLModel"]
+    self.outputSelector.nodeTypes = ( ("vtkMRMLModelNode"), "" )
     self.outputSelector.selectNodeUponCreation = True
     self.outputSelector.addEnabled = True
     self.outputSelector.removeEnabled = True
@@ -108,7 +108,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.maximum = 255
     self.imageThresholdSliderWidget.value = 0
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
-    parametersFormLayout.addRow("Red value", self.imageThresholdSliderWidget)
+    #parametersFormLayout.addRow("Red value", self.imageThresholdSliderWidget)
 
     #
     # Green threshold value
@@ -119,7 +119,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.maximum = 255
     self.imageThresholdSliderWidget.value = 0
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
-    parametersFormLayout.addRow("Green value", self.imageThresholdSliderWidget)
+    #parametersFormLayout.addRow("Green value", self.imageThresholdSliderWidget)
 	
     #
     # Blue threshold value
@@ -130,7 +130,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.maximum = 255
     self.imageThresholdSliderWidget.value = 0
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
-    parametersFormLayout.addRow("Blue value", self.imageThresholdSliderWidget)
+    #parametersFormLayout.addRow("Blue value", self.imageThresholdSliderWidget)
 	
     #
     # +/- threshold value
@@ -141,18 +141,8 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     self.imageThresholdSliderWidget.maximum = 255
     self.imageThresholdSliderWidget.value = 0
     self.imageThresholdSliderWidget.setToolTip("Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.")
-    parametersFormLayout.addRow("+/- Threshold", self.imageThresholdSliderWidget)
+    #parametersFormLayout.addRow("+/- Threshold", self.imageThresholdSliderWidget)
 	
-    #
-    # /*TODO DELETE*/
-    #
-    # check box to trigger taking screen shots for later use in tutorials
-    #
-    #self.enableScreenshotsFlagCheckBox = qt.QCheckBox()
-    #self.enableScreenshotsFlagCheckBox.checked = 0
-    #self.enableScreenshotsFlagCheckBox.setToolTip("If checked, take screen shots for tutorials. Use Save Data to write them to disk.")
-    #parametersFormLayout.addRow("Enable Screenshots", self.enableScreenshotsFlagCheckBox)
-
     #
     # Texture Selection
     #
@@ -172,13 +162,21 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     parametersFormLayout.addRow(self.applyButton)
 	
     #
-    # Segment Button
+    # Export Triangles Button
     #
-    self.segmentButton = qt.QPushButton("Segment Model")
-    self.segmentButton.toolTip = "Run the segmentation"
-    self.segmentButton.enabled = True
+    self.segmentButton = qt.QPushButton("Export Triangles")
+    self.segmentButton.toolTip = "Export data to be segmented"
+    self.segmentButton.enabled = False
     parametersFormLayout.addRow(self.segmentButton)
-
+	
+    #
+    # Import Segmentation Data
+    #
+    self.importButton = qt.QPushButton("Import Segmented Data")
+    self.importButton.toolTip = "Load in segmented data"
+    self.importButton.enabled = False
+    parametersFormLayout.addRow(self.importButton)
+	
     #
     # Surface Area Display 
     #
@@ -188,6 +186,7 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     # connections
     self.applyButton.connect('clicked(bool)', self.onApplyButton)
     self.segmentButton.connect('clicked(bool)',self.onSegmentButton)
+    self.importButton.connect('clicked(bool)',self.onImportButton)
     self.inputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
     self.inputTextureSelector.connect('currentNodeChanged(vtkMRMLNode*)', self.onSelect)
     self.outputSelector.connect("currentNodeChanged(vtkMRMLNode*)", self.onSelect)
@@ -210,11 +209,19 @@ class textureBasedSegmentationWidget(ScriptedLoadableModuleWidget):
     logic.ShowTextureOnModel(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
     logic.MapRGBtoPoints(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
     self.surfaceAreaDisplay.setText('Surface Area: ' + str(logic.GetSurfaceArea(self.inputSelector.currentNode())) + ' mm^2')
+    
+    self.segmentButton.enabled = True
+    self.importButton.enabled = True
     #logic.run(self.inputSelector.currentNode(), self.outputSelector.currentNode(), imageThreshold)
 
   def onSegmentButton(self):
     logic = textureBasedSegmentationLogic()
     logic.SegmentTriangles(self.inputSelector.currentNode(), self.inputTextureSelector.currentNode())
+    #self.importSegmentationButton.enabled = True
+	
+  def onImportButton(self):
+    logic = textureBasedSegmentationLogic()
+    logic.renderSegmentedData(self.inputSelector.currentNode(), self.outputSelector.currentNode(), self.textureSelector.currentIndex)
 	
 #
 # textureBasedSegmentationLogic
@@ -268,13 +275,66 @@ class textureBasedSegmentationLogic(ScriptedLoadableModuleLogic):
       outputArray[i][1] = redValues.GetValue(i)
       outputArray[i][2] = greenValues.GetValue(i)
       outputArray[i][2] = blueValues.GetValue(i)
-	  
-    with open(os.path.join(os.pardir,'textureData.pkl'), 'wb') as f:
-      pickle.dump(outputArray, f)
+	
+    #np.savetxt('C:/Users/Brand/OneDrive/Documents/outputArray.csv',outputArray,delimiter=',')
+	
+    outputArray.dump('C:/Users/Brand/OneDrive/Documents/outputArray.pkl')
+	
+    #with open('C:/Users/Brand/OneDrive/Documents/outputArray.pkl', 'wb') as f:
+    #  pickle.dump(outputArray, f)
+    # pickle.dump(outputArray, open(os.chdir('C:/Users/Brand/OneDrive/Documents/outputArray.pkl'),'wb'))
     #serializedArray = pickle.dumps(outputArray, protocol=0)
 	
     return 0
-	 
+	
+  def renderSegmentedData(self, modelNode, outputModelNode, selectedTexture):
+	
+    fullPolyData = modelNode.GetPolyData()
+    pointData=fullPolyData.GetPointData()
+	
+    data = np.load('C:/Users/Brand/OneDrive/Documents/CISC 472/test segmentation_model/classified_texture.pkl')
+    size_of_data = data.shape
+    print(size_of_data)
+    print(int(data[1][0]))
+    print(' ')
+    print(selectedTexture)
+	
+    segmentedPointIds = vtk.vtkIdTypeArray()
+
+    print('begin classifiacation')
+    for point in range(size_of_data[1]):
+      if int(data[1][point]) == selectedTexture:
+        segmentedPointIds.InsertNextValue(int(data[0][point]))
+        segmentedPointIds.InsertNextValue(int(data[0][point]))
+		
+    print('calssification done')
+    selectionNode = vtk.vtkSelectionNode()
+    selectionNode.SetFieldType(vtk.vtkSelectionNode.POINT)
+    selectionNode.SetContentType(vtk.vtkSelectionNode.INDICES)
+    selectionNode.SetSelectionList(segmentedPointIds)
+    selectionNode.GetProperties().Set(vtk.vtkSelectionNode.CONTAINING_CELLS(), 1);
+
+    selection = vtk.vtkSelection()
+    selection.AddNode(selectionNode)
+
+    extractSelection = vtk.vtkExtractSelection()
+    extractSelection.SetInputData(0,fullPolyData)
+    extractSelection.SetInputData(1,selection);
+    extractSelection.Update();
+	
+    convertToPolydata = vtk.vtkDataSetSurfaceFilter()
+    convertToPolydata.SetInputConnection(extractSelection.GetOutputPort())
+    convertToPolydata.Update()
+    outputModelNode.SetAndObservePolyData(convertToPolydata.GetOutput())
+
+    if not outputModelNode.GetDisplayNode():
+      md2 = slicer.vtkMRMLModelDisplayNode()
+      slicer.mrmlScene.AddNode(md2)
+      outputModelNode.SetAndObserveDisplayNodeID(md2.GetID()) 
+	
+    print('done?')
+    return 0	
+	
   #
   # Add texture data to scalars
   #
